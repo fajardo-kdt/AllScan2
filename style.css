@@ -1,5 +1,6 @@
 /* style.css file*/
 body {
+    font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     margin: 0;
@@ -58,6 +59,37 @@ button {
 
 button:hover {
     background-color: #008000;
+}
+
+#updateBtn, #createBtn {
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #ffffff;
+    cursor: pointer;
+    border-radius: 0.25em;
+    transition: 0.3s background-color;
+}
+
+#updateBtn {
+    background-color: #d1bf21;
+}
+
+#createBtn {
+    background-color: #1f8dd6;
+}
+
+#updateBtn:hover {
+    background-color: #b9a918;
+}
+
+#createBtn:hover {
+    background-color: #207fbe;
+}
+
+.index-button-holder {
+    display: flex;
+    justify-content: space-between;
+    margin: 2rem 0;
 }
 
 #html5-qrcode-anchor-scan-type-change {

@@ -8,9 +8,11 @@
     <script defer src="../scripts/create.js"></script>
 </head>
 <body>
-    <div class="container">
+    <div class="container" style="display:none;">
+        <a href="../index.html" class="backBtn">Go Back</a>
         <form id="productForm">
             <h1>Add New Product</h1>
+            
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" placeholder="Name" required>
 
@@ -20,13 +22,107 @@
             <label for="productCode">Product Code:</label>
             <input type="text" id="productCode" name="productCode" placeholder="Product Code" required>
 
-            <div id="qrContainer"></div>
+            <!-- Image capture result section -->
+            <div id="captureResult">
+                <h3>Captured Image:</h3>
+                <img id="capturedImage" src="" alt="Captured Image" width="320">
+
+                <h3>QR Code:</h3>
+                <div id="qrContainer"></div>
+            </div>
 
             <button type="submit">Add Product</button>
         </form>
     </div>
 
+    <!-- Camera section (stands alone, always visible) -->
+    <div id="cameraSection">
+        <video id="video" width="320" height="240" autoplay></video>
+        <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+        <button type="button" id="captureBtn">Capture Image</button>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
-    
+    <script>
+        // Variables
+        const video = document.getElementById("video");
+        const captureBtn = document.getElementById("captureBtn");
+        const canvas = document.getElementById("canvas");
+        const container = document.querySelector('.container');
+        const capturedImage = document.getElementById("capturedImage");
+        const qrContainer = document.getElementById("qrContainer");
+
+        // Start the camera immediately when the page loads
+        window.addEventListener('load', () => {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function(stream) {
+                        video.srcObject = stream;
+                    })
+                    .catch(function(error) {
+                        console.error("Error accessing the camera: ", error);
+                    });
+            }
+        });
+
+        // Capture image function
+        captureBtn.addEventListener("click", function() {
+            const context = canvas.getContext("2d");
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Get the image as base64
+            const imgData = canvas.toDataURL("image/png");
+
+            // Display the captured image in the result container
+            capturedImage.src = imgData;
+            container.style.display = "block"; // Show the container with image and QR code
+
+            // Generate QR Code for the captured image (optional)
+            QRCode.toCanvas(canvas, imgData, function(error) {
+                if (error) console.error(error);
+                console.log("QR Code generated!");
+            });
+
+            // Hide the camera feed and capture button after capture
+            video.style.display = "none";
+            captureBtn.style.display = "none";
+        });
+
+        // Optionally, send the image to your server/database via an API call
+        function saveImageToDatabase(imgData) {
+            fetch('/your-api-endpoint', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    image: imgData,
+                    name: document.getElementById('name').value,
+                    quantity: document.getElementById('quantity').value,
+                    productCode: document.getElementById('productCode').value
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Image saved to database', data);
+            })
+            .catch(error => {
+                console.error('Error saving image:', error);
+            });
+        }
+
+        // Example: You could call saveImageToDatabase when submitting the form
+        document.getElementById('productForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form from submitting normally
+
+            // Get the image data URL
+            const imgData = capturedImage.src;
+
+            // Save the image to the database
+            saveImageToDatabase(imgData);
+
+            // Continue with form submission logic (e.g., redirect, success message, etc.)
+        });
+    </script>
 </body>
 </html>
