@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AllScan</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="manifest" href="./manifest.json">
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script defer src="script.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <h1>AllScan - Progressive Web Application (PWA)</h1>
+        <h1>Scan QR Codes</h1>
+        <div class="section">
+            <div id="my-qr-reader"></div>
+        </div>
+
+         <!-- Modal for displaying product details -->
+         <div class="modal" id="modal" style="display: none;">
+            <div class="modal-content">
+                <h1>Product Details</h1>
+                <p><strong>Name:</strong> <span id="product-name"></span></p>
+                <p><strong>Quantity:</strong> <span id="product-quantity"></span></p>
+                <p><strong>Product Code:</strong> <span id="product-code"></span></p>
+                <div id="qr-code-img"></div>
+                <div id="map-container" style="height: 400px;"></div>
+                <button id="close-btn">Close</button>
+            </div>
+        </div>
+
+        <a href="./pages/create.html" id="updateBtn">Update Product</a>
+        <a href="./pages/create.html" id="createBtn">Create Product</a>
+    </div>
+</body>
+</html>
